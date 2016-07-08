@@ -56,5 +56,5 @@ controller.hears(['hello', 'hi', 'howdy'], ['direct_message', 'direct_mention', 
 
 // outgoing webhook, replies when mentioned as @ahsan_bot
 controller.on('outgoing_webhook', (bot, message) => {
-  bot.replyPublic(message, 'hi ahsan ...');
+  bot.replyPublic(message, 'i\'m awakeeeee http://giphy.com/gifs/lol-star-wars-7zdsOWDgSCzDi');
 });
