@@ -5,6 +5,9 @@ import botkit from 'botkit';
 // Yelp
 const Yelp = require('yelp');
 
+// checking whether a specific case is fulfilled
+// let match = false;
+
 const yelp = new Yelp({
   consumer_key: process.env.CONSUMER_KEY,
   consumer_secret: process.env.CONSUMER_SECRET,
@@ -23,7 +26,7 @@ console.log('starting bot');
 
 // botkit controller
 const controller = botkit.slackbot({
-  debug: false,
+  debug: true,
 });
 
 // initialize slackbot
@@ -57,4 +60,19 @@ controller.hears(['hello', 'hi', 'howdy'], ['direct_message', 'direct_mention', 
 // outgoing webhook, replies when mentioned as @ahsan_bot
 controller.on('outgoing_webhook', (bot, message) => {
   bot.replyPublic(message, 'i\'m awakeeeee http://giphy.com/gifs/lol-star-wars-7zdsOWDgSCzDi');
+});
+
+// default reply, triggered when no specific case fulfilled
+controller.hears('help', ['direct_mention', 'mention', 'direct_message'], (bot, message) => {
+  console.log('sending help message');
+  bot.reply(message, 'Hi, my name is golem (short for Self-Reliant Riot' +
+                      ' Control Golem). I\'m just your friendly everyday' +
+                      ' bot, except better. I can do so much and so much' +
+                      ' more. Here are a few things I can help you with: ');
+});
+
+// default reply, triggered when no specific case fulfilled
+controller.hears('(.*)', ['direct_message', 'direct_mention', 'mention'], (bot, message) => {
+  console.log('sending default message');
+  bot.reply(message, 'Hhhhmm I didn\'t quite get that ... maybe rephrase it?');
 });
