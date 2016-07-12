@@ -176,17 +176,18 @@ function tellWeather(response, convo) {
       // Examine the text in the response
       Wresponse.json().then((fetchedData) => {
         console.log(fetchedData);
-        const replyWithAttachments = {
+        const replyWWithAttachments = {
           username: '',
           text: '',
           attachments: [
             {
+              mrkdwn: true,
               fallback: 'Oops ... the weather doesn\'t seem available',
               pretext: '',
               title: `The Weather Right Now -- ${fetchedData.weather[0].main}`,
               title_link: '',
-              text: `- ${fetchedData.weather[0].description},\n` +
-                    `- ${fetchedData.main.temp}\xB0C     ` +
+              text: `:heavy_check_mark: ${fetchedData.weather[0].description},\n` +
+                    `:heavy_check_mark: ${fetchedData.main.temp}\xB0C     ` +
                     `( high: ${fetchedData.main.temp_max}` +
                     `, low: ${fetchedData.main.temp_max} )\n`,
               image_url: `http://openweathermap.org/img/w/${fetchedData.weather[0].icon}.png`,
@@ -198,7 +199,7 @@ function tellWeather(response, convo) {
           icon_url: '',
         };
 
-        convo.say(replyWithAttachments);
+        convo.say(replyWWithAttachments);
       });
     }
     )
