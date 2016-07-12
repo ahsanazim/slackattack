@@ -9,7 +9,7 @@
 
 The following is an example of ***waking it up***, in the way described above:
 
-<img src="https://raw.githubusercontent.com/ahsanazim/slackattack/master/imgs/testing/waking_up/1.PNG" height="600">
+<img src="https://raw.githubusercontent.com/ahsanazim/slackattack/master/imgs/testing/waking_up/1.png" width="500">
 
 Secondly, ***when referring to my bot in a public channel, then use the `@ahsan_bot` handle***, as shown in the pictures in the following testing section. Do not attempt to use its full name or any combination of it. 
 
