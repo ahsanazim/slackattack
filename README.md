@@ -7,7 +7,7 @@
 
 #####Also, it is listening on ***all*** public channels (hence including the #bots channel, as per the assignment requirements)
 
-The following is an example of waking it up, in the way described above:
+The following is an example of ***waking it up***, in the way described above:
 
 ![](imgs/testing/waking_up/1.png)
 
