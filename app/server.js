@@ -1,11 +1,13 @@
-// ------------------------- initialization ------------------------------------
+// ==========================[ initialization ]=================================
 
 import botkit from 'botkit';
-// this is es6 syntax for importing libraries
+
+
+// es6 syntax for importing libraries
 // in older js this would be: var botkit = require('botkit')
 
-// Yelp
-const Yelp = require('yelp');
+const fetch = require('node-fetch');    // fetch
+const Yelp = require('yelp');           // Yelp
 
 // yelp object, when need yelp will act on this
 const yelp = new Yelp({
@@ -40,7 +42,7 @@ controller.setupWebserver(process.env.PORT || 3001, (err, webserver) => {
   });
 });
 
-// -----------------------------------------------------------------------------
+// =========================[ Misc. Replies & Setup ]===========================
 
 // hello response
 controller.hears(['hello', 'hi', 'howdy'], ['direct_message', 'direct_mention', 'mention'], (bot, message) => {
@@ -67,7 +69,7 @@ controller.hears('help', ['direct_mention', 'mention', 'direct_message'], (bot, 
                       ' more. Here are a few things I can help you with: ');
 });
 
-// ------------------------ Yelp food conversation -----------------------------
+// =======================[ Yelp food conversation ]============================
 
 controller.hears('hungry', ['direct_mention', 'mention', 'direct_message'], (bot, message) => {
   bot.startConversation(message, askWantFood);
@@ -137,7 +139,75 @@ function tellFoodPlaces(response, convo) {
   });
 }
 
-// -----------------------------------------------------------------------------
+// ========================[ Open Weather query ]===============================
+
+// fetch based API use - note use of node-fetch from (https://github.com/bitinn/node-fetch),
+// since normal isn't defined. Use of fetch based on:
+// https://developers.google.com/web/updates/2015/03/introduction-to-fetch?hl=en
+// https://github.com/bitinn/node-fetch
+
+controller.hears('weather', ['direct_mention', 'mention', 'direct_message'], (bot, message) => {
+  bot.startConversation(message, askLocationWeather);
+});
+
+function askLocationWeather(response, convo) {
+  const locationResp = { key: 'weatherLocation', multiple: false };
+  convo.ask('I\'ll have your weather coming right up!\nFirst -- where do ' +
+            'you want the weather for? (e.g. hanover,nh)', () => {
+    convo.say('Ok! Give me a second . . .');
+    tellWeather(response, convo);
+    convo.next();
+  }, locationResp);
+}
+
+function tellWeather(response, convo) {
+  const weatherLocationStr = convo.extractResponse('weatherLocation');
+  const URLFinal = 'http://api.openweathermap.org/data/2.5/weather?q=' +
+                `${weatherLocationStr}&appid=7de6373d8e813bf64c4dab674a9c2429` +
+                '&units=metric';
+  console.log(`###$#$#$#$$#$#$$ FINAL URL IS  ${URLFinal}`);
+  fetch(`${URLFinal}`)
+    .then((Wresponse) => {
+      if (Wresponse.status !== 200) {
+        console.log('Looks like there was a problem. Status Code: ' +
+                    `${Wresponse.status}`);
+        return;
+      }
+      // Examine the text in the response
+      Wresponse.json().then((fetchedData) => {
+        console.log(fetchedData);
+        const replyWithAttachments = {
+          username: '',
+          text: '',
+          attachments: [
+            {
+              fallback: 'Oops ... the weather doesn\'t seem available',
+              pretext: '',
+              title: `The Weather Right Now -- ${fetchedData.weather[0].main}`,
+              title_link: '',
+              text: `- ${fetchedData.weather[0].description},\n` +
+                    `- ${fetchedData.main.temp}\xB0C     ` +
+                    `( high: ${fetchedData.main.temp_max}` +
+                    `, low: ${fetchedData.main.temp_max} )\n`,
+              image_url: `http://openweathermap.org/img/w/${fetchedData.weather[0].icon}.png`,
+              color: '#7CD197',
+              unfurl_media: true,
+              unfurl_links: true,
+            },
+          ],
+          icon_url: '',
+        };
+
+        convo.say(replyWithAttachments);
+      });
+    }
+    )
+    .catch((err) => {
+      console.log('Fetch Error :-S', err);
+    });
+}
+
+// =============================================================================
 
 // default reply, triggered when no specific case fulfilled
 controller.hears('(.*)', ['direct_message', 'direct_mention', 'mention'], (bot, message) => {
