@@ -162,8 +162,9 @@ function askLocationWeather(response, convo) {
 
 function tellWeather(response, convo) {
   const weatherLocationStr = convo.extractResponse('weatherLocation');
+  const appid = process.env.APP_ID;
   const URLFinal = 'http://api.openweathermap.org/data/2.5/weather?q=' +
-                `${weatherLocationStr}&appid=7de6373d8e813bf64c4dab674a9c2429` +
+                `${weatherLocationStr}&appid=${appid}` +
                 '&units=metric';
   console.log(`###$#$#$#$$#$#$$ FINAL URL IS  ${URLFinal}`);
   fetch(`${URLFinal}`)
