@@ -1,10 +1,8 @@
 // ==========================[ initialization ]================================>
 
-import botkit from 'botkit';
-
-
 // es6 syntax for importing libraries
 // in older js this would be: var botkit = require('botkit')
+import botkit from 'botkit';
 
 const fetch = require('node-fetch');    // fetch
 const Yelp = require('yelp');           // Yelp
@@ -71,6 +69,7 @@ controller.hears('help', ['direct_mention', 'mention', 'direct_message'], (bot, 
 
 // ==============================[ Yelp API ]==================================>
 
+// hearing 'hungry' will trigger this conversation
 controller.hears('hungry', ['direct_mention', 'mention', 'direct_message'], (bot, message) => {
   bot.startConversation(message, askWantFood);
 });
@@ -83,6 +82,7 @@ function askWantFood(response, convo) {
   });
 }
 
+// what type of food do you want?
 function askTypeFood(response, convo) {
   const foodKindResp = { key: 'foodKind', multiple: false };
   convo.ask('What kind of food do you like?', () => {
@@ -92,6 +92,7 @@ function askTypeFood(response, convo) {
   }, foodKindResp);
 }
 
+// where do you want it?
 function askLocationFood(response, convo) {
   const locationResp = { key: 'foodLocation', multiple: false };
   convo.ask('So where do you live?', () => {
@@ -101,6 +102,7 @@ function askLocationFood(response, convo) {
   }, locationResp);
 }
 
+// give answers via attatchment message after using Yelp query
 function tellFoodPlaces(response, convo) {
   const foodKindStr = convo.extractResponse('foodKind');
   const foodLocationStr = convo.extractResponse('foodLocation');
@@ -146,10 +148,12 @@ function tellFoodPlaces(response, convo) {
 // https://developers.google.com/web/updates/2015/03/introduction-to-fetch?hl=en
 // https://github.com/bitinn/node-fetch
 
+// hearing 'weather' will trigger this conversation
 controller.hears('weather', ['direct_mention', 'mention', 'direct_message'], (bot, message) => {
   bot.startConversation(message, askLocationWeather);
 });
 
+// where do you want the weather of?
 function askLocationWeather(response, convo) {
   const locationResp = { key: 'weatherLocation', multiple: false };
   convo.ask('I\'ll have your weather coming right up!\nFirst -- where do ' +
@@ -160,6 +164,7 @@ function askLocationWeather(response, convo) {
   }, locationResp);
 }
 
+// give answers via attatchment message after querying Open Weather API
 function tellWeather(response, convo) {
   const weatherLocationStr = convo.extractResponse('weatherLocation');
   const appid = process.env.APP_ID;
@@ -214,10 +219,12 @@ function tellWeather(response, convo) {
 // used the below official developers site to get a hang of how to set this up
 // https://developers.google.com/maps/documentation/static-maps/intro#Locations
 
+// hearing 'map' will trigger this conversation
 controller.hears('map', ['direct_mention', 'mention', 'direct_message'], (bot, message) => {
   bot.startConversation(message, askLocationMap);
 });
 
+// where do you want a map of?
 function askLocationMap(response, convo) {
   const locationResp = { key: 'mapLocation', multiple: false };
   convo.ask('I\'ll have a map coming right up!\nFirst -- where do ' +
@@ -228,10 +235,11 @@ function askLocationMap(response, convo) {
   }, locationResp);
 }
 
+// what type of map do you want? (refer to aforementioned dev tools website)
 function askMapType(response, convo) {
   const typeResp = { key: 'mapType', multiple: false };
   convo.ask('What type of map do you want:\n1. \'roadmap\' (digitzed map ' +
-    ' focusing on roads and structure)\n2. \'sattelite\' (sattelite image)' +
+    ' focusing on roads and structure)\n2. \'satellite\' (sattelite image)' +
     '\n3. \'terrain\' (physical relief map image, showing terrain and vegetation' +
     ')\n4. \'hybrid\' (hybrid of the satellite and roadmap image, showing a ' +
     'transparent layer of major streets and place names on the satellite image)',
@@ -242,17 +250,20 @@ function askMapType(response, convo) {
   }, typeResp);
 }
 
+// what level of zoom?
 function askMapZoom(response, convo) {
-  const zoomResp = { key: 'mapType', multiple: false };
-  convo.ask(':mag: What zoom level do you want:\n--> \'1\' (World)' +
-  '\n--> \'5\' (Continent)\n--> \'10\' (City)\n--> \'15\' (Streets)\n-->' +
-  '\'20\' (Buildings)', () => {
+  const zoomResp = { key: 'zoom', multiple: false };
+  convo.ask(':mag: What zoom level do you want:\n:point_right:  \'1\' (World)' +
+  '\n:point_right:  \'5\' (Continent)\n:point_right:  \'10\' (City)\n:point_right:'
+  + ' \'15\' (Streets)\n:point_right:  \'20\' (Buildings)', () => {
     convo.say('Ok! Give me a second . . .');
     tellMap(response, convo);
     convo.next();
   }, zoomResp);
 }
 
+// give image via attatchement message - note nothing fancy done to create
+// message - simple URL generation
 function tellMap(response, convo) {
   const mapLocationStr = convo.extractResponse('mapLocation');
   const mapTypeStr = convo.extractResponse('mapType');
