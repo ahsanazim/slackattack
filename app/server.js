@@ -222,17 +222,45 @@ function askLocationMap(response, convo) {
   const locationResp = { key: 'mapLocation', multiple: false };
   convo.ask('I\'ll have a map coming right up!\nFirst -- where do ' +
             'you want a map for? (e.g. City Hall, New York, NY)', () => {
-    convo.say('Ok! Give me a second . . .');
-    tellMap(response, convo);
+    convo.say('Ok! Now ...');
+    askMapType(response, convo);
     convo.next();
   }, locationResp);
 }
 
+function askMapType(response, convo) {
+  const typeResp = { key: 'mapType', multiple: false };
+  convo.ask('What type of map do you want:\n1. \'roadmap\' (digitzed map ' +
+    ' focusing on roads and structure)\n2. \'sattelite\' (sattelite image)' +
+    '\n3. \'terrain\' (physical relief map image, showing terrain and vegetation' +
+    ')\n4. \'hybrid\' (hybrid of the satellite and roadmap image, showing a ' +
+    'transparent layer of major streets and place names on the satellite image)',
+  () => {
+    convo.say('Now ... ');
+    askMapZoom(response, convo);
+    convo.next();
+  }, typeResp);
+}
+
+function askMapZoom(response, convo) {
+  const zoomResp = { key: 'mapType', multiple: false };
+  convo.ask(':mag: What zoom level do you want:\n--> \'1\' (World)' +
+  '\n--> \'5\' (Continent)\n--> \'10\' (City)\n--> \'15\' (Streets)\n-->' +
+  '\'20\' (Buildings)', () => {
+    convo.say('Ok! Give me a second . . .');
+    tellMap(response, convo);
+    convo.next();
+  }, zoomResp);
+}
+
 function tellMap(response, convo) {
   const mapLocationStr = convo.extractResponse('mapLocation');
+  const mapTypeStr = convo.extractResponse('mapType');
+  const zoomStr = convo.extractResponse('zoom');
   const mapid = process.env.GOOGLE_STATIC_MAP_ID;
   const URL = 'https://maps.googleapis.com/maps/api/staticmap?center=' +
-              `${mapLocationStr}&zoom=10&size=400x400&key=${mapid}`;
+              `${mapLocationStr}&zoom=${zoomStr}&size=600x400&maptype=${mapTypeStr}` +
+              `&key=${mapid}`;
 
   // reference following link for string replacement technique:
   // http://stackoverflow.com/questions/3794919/replace-all-spaces-in-a-string-with
