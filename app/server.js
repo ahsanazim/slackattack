@@ -1,4 +1,4 @@
-// ==========================[ initialization ]=================================
+// ==========================[ initialization ]================================>
 
 import botkit from 'botkit';
 
@@ -42,7 +42,7 @@ controller.setupWebserver(process.env.PORT || 3001, (err, webserver) => {
   });
 });
 
-// =========================[ Misc. Replies & Setup ]===========================
+// =========================[ Misc. Replies & Setup ]==========================>
 
 // hello response
 controller.hears(['hello', 'hi', 'howdy'], ['direct_message', 'direct_mention', 'mention'], (bot, message) => {
@@ -69,7 +69,7 @@ controller.hears('help', ['direct_mention', 'mention', 'direct_message'], (bot, 
                       ' more. Here are a few things I can help you with: ');
 });
 
-// =======================[ Yelp food conversation ]============================
+// =======================[ Yelp food conversation ]===========================>
 
 controller.hears('hungry', ['direct_mention', 'mention', 'direct_message'], (bot, message) => {
   bot.startConversation(message, askWantFood);
@@ -139,7 +139,7 @@ function tellFoodPlaces(response, convo) {
   });
 }
 
-// ========================[ Open Weather query ]===============================
+// ========================[ Open Weather query ]==============================>
 
 // fetch based API use - note use of node-fetch from (https://github.com/bitinn/node-fetch),
 // since normal isn't defined. Use of fetch based on:
@@ -207,7 +207,7 @@ function tellWeather(response, convo) {
     });
 }
 
-// =============================================================================
+// ============================================================================>
 
 // default reply, triggered when no specific case fulfilled
 controller.hears('(.*)', ['direct_message', 'direct_mention', 'mention'], (bot, message) => {
