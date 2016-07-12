@@ -166,7 +166,7 @@ function tellWeather(response, convo) {
   const URLFinal = 'http://api.openweathermap.org/data/2.5/weather?q=' +
                 `${weatherLocationStr}&appid=${appid}` +
                 '&units=metric';
-  console.log(`final URL is ${URLFinal}`);
+
   fetch(`${URLFinal}`)
     .then((Wresponse) => {
       if (Wresponse.status !== 200) {
@@ -211,6 +211,9 @@ function tellWeather(response, convo) {
 
 // =======================[ Google Static Maps API ]===========================>
 
+// used the below official developers site to get a hang of how to set this up
+// https://developers.google.com/maps/documentation/static-maps/intro#Locations
+
 controller.hears('map', ['direct_mention', 'mention', 'direct_message'], (bot, message) => {
   bot.startConversation(message, askLocationMap);
 });
@@ -228,50 +231,33 @@ function askLocationMap(response, convo) {
 function tellMap(response, convo) {
   const mapLocationStr = convo.extractResponse('mapLocation');
   const mapid = process.env.GOOGLE_STATIC_MAP_ID;
-  const URLFinal = 'https://maps.googleapis.com/maps/api/staticmap?center=' +
-                   `${mapLocationStr}&zoom=10&size=400x400&key=${mapid}`;
-  console.log(`final URL is ${URLFinal}`);
-  fetch(`${URLFinal}`)
-    .then((WWresponse) => {
-      if (WWresponse.status !== 200) {
-        console.log('Looks like there was a problem. Status Code: ' +
-                    `${WWresponse.status}`);
-        return;
-      }
-      // Examine the text in the response
-      WWresponse.json().then((fetchedDataMap) => {
-        console.log(`here is the map: ${fetchedDataMap}`);
-        convo.say(`here is the map: ${fetchedDataMap}`);
-        // const replyWWithAttachments = {
-        //   username: '',
-        //   text: '',
-        //   attachments: [
-        //     {
-        //       mrkdwn: true,
-        //       fallback: 'Oops ... the weather doesn\'t seem available',
-        //       pretext: '',
-        //       title: `The Weather Right Now -- ${fetchedData.weather[0].main}`,
-        //       title_link: '',
-        //       text: `:heavy_check_mark: ${fetchedData.weather[0].description},\n` +
-        //             `:heavy_check_mark: ${fetchedData.main.temp}\xB0C     ` +
-        //             `( high: ${fetchedData.main.temp_max}` +
-        //             `, low: ${fetchedData.main.temp_max} )\n`,
-        //       image_url: `http://openweathermap.org/img/w/${fetchedData.weather[0].icon}.png`,
-        //       color: '#7CD197',
-        //       unfurl_media: true,
-        //       unfurl_links: true,
-        //     },
-        //   ],
-        //   icon_url: '',
-        // };
-        //
-        // convo.say(replyWWithAttachments);
-      });
-    }
-    )
-    .catch((err) => {
-      console.log('Fetch Error :-S', err);
-    });
+  const URL = 'https://maps.googleapis.com/maps/api/staticmap?center=' +
+              `${mapLocationStr}&zoom=10&size=400x400&key=${mapid}`;
+
+  // reference following link for string replacement technique:
+  // http://stackoverflow.com/questions/3794919/replace-all-spaces-in-a-string-with
+  const URLFinal = URL.replace(/ /g, '+');
+
+  const replyWWWithAttachments = {
+    username: '',
+    text: '',
+    attachments: [
+      {
+        fallback: 'Oops ... the weather doesn\'t seem available',
+        pretext: '',
+        title: `${mapLocationStr}`,
+        title_link: '',
+        text: '',
+        image_url: `${URLFinal}`,
+        color: '#7CD197',
+        unfurl_media: true,
+        unfurl_links: true,
+      },
+    ],
+    icon_url: '',
+  };
+
+  convo.say(replyWWWithAttachments);
 }
 
 
