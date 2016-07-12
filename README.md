@@ -9,7 +9,7 @@
 
 The following is an example of ***waking it up***, in the way described above:
 
-![](imgs/testing/waking_up/1.PNG)
+<img src="https://raw.githubusercontent.com/ahsanazim/slackattack/master/imgs/testing/waking_up/1.PNG" height="600">
 
 Secondly, ***when referring to my bot in a public channel, then use the `@ahsan_bot` handle***, as shown in the pictures in the following testing section. Do not attempt to use its full name or any combination of it. 
 
@@ -66,6 +66,8 @@ Moving on to the `imgs/testing/yelp` directory - here I show a yelp query that c
 ![](imgs/testing/yelp/1.png)
 and
 ![](imgs/testing/yelp/2.png)
+
+# Extra Credit Testing:
 
 Now there are the two subdirectories containing proof of testing my **Extra Credit** Implementations:
 
